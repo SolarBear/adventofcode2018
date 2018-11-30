@@ -1,0 +1,27 @@
+{
+  "name": "adventofcode2018",
+  "version": "1.0.0",
+  "description": "Advent of Code 2018 - https://adventofcode.com/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SolarBear/adventofcode2018.git"
+  },
+  "keywords": [
+    "AoC",
+    "adventofcode",
+    "elm"
+  ],
+  "author": "David Lacerte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SolarBear/adventofcode2018/issues"
+  },
+  "homepage": "https://github.com/SolarBear/adventofcode2018#readme",
+  "dependencies": {
+    "elm": "^0.19.0-bugfix2"
+  }
+}
