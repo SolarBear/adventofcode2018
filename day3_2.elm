@@ -2,10 +2,8 @@ import Html exposing (..)
 import Browser exposing (sandbox)
 import Parser exposing (Parser, (|=), (|.))
 import Array exposing (Array)
+import Maybe exposing (..)
 
--- NOT
--- 9
--- 37
 
 -- Coords are 0-based
 input = """#1 @ 912,277: 27x20
@@ -1289,7 +1287,10 @@ view : Model -> Html Msg
 view model =
     let
         rects = transform model
-        noOverlap = checkForOverlaps rects
+        noOverlaps = List.map (checkForOverlaps rects) rects
+                  |> List.filterMap identity -- remove Nothing values
+        noOverlap = List.head noOverlaps
+                 |> Maybe.withDefault {x=0,y=0,w=0,h=0}
         string = [noOverlap.x, noOverlap.y, noOverlap.w, noOverlap.h]
             |> List.map String.fromInt
             |> String.join ","
@@ -1342,19 +1343,20 @@ rectangle =
 
 rectanglesOverlap : Rectangle -> Rectangle -> Bool
 rectanglesOverlap rect1 rect2 =
-    rect1.x > rect2.x + rect2.w || rect2.x > rect1.x + rect1.w || rect1.y > rect2.y + rect2.h || rect2.y > rect1.y + rect1.h
-    |> not
+    -- It`s easier to check for rectangles NOT overlapping and then flip the resulting boolean
+    let
+        noOverlap = rect1.x > rect2.x + rect2.w || rect2.x > rect1.x + rect1.w || rect1.y > rect2.y + rect2.h || rect2.y > rect1.y + rect1.h
+        identical = rect1.x == rect2.x && rect1.y == rect2.y && rect1.w == rect2.w && rect1.h == rect2.h
+    in
+        not (noOverlap || identical)
+    
 
-checkForOverlaps : List Rectangle -> Rectangle
-checkForOverlaps rectangles =
-    case rectangles of
-        [] ->
-            {x=0,y=0,w=0,h=0}        
-        rect :: rest ->
-            let
-                overlaps = List.filter (rectanglesOverlap rect) rest
-            in
-                if (List.length overlaps) > 0 then
-                    checkForOverlaps rest
-                else
-                    rect
+checkForOverlaps : List Rectangle -> Rectangle -> Maybe Rectangle
+checkForOverlaps rectangles rect =
+    let
+        overlappingRectangles = List.filter (rectanglesOverlap rect) rectangles
+    in
+        if List.length overlappingRectangles > 0 then
+            Nothing
+        else
+            Just rect
