@@ -186,7 +186,7 @@ input = """#1 @ 912,277: 27x20
 #176 @ 649,310: 22x23
 #177 @ 625,268: 15x23
 #178 @ 250,950: 13x26
-179 @ 224,765: 16x28
+#179 @ 224,765: 16x28
 #180 @ 748,406: 14x14
 #181 @ 651,1: 24x11
 #182 @ 162,816: 27x13
@@ -1374,7 +1374,7 @@ updateFabric fabric rect =
         leftPart = Array.slice 0 top fabric
         middlePart = Array.slice top bottom fabric
                     |> Array.map updateLineFn
-        rightPart = Array.slice bottom fabricSize
+        rightPart = Array.slice bottom fabricSize fabric
         
     in
         Array.append leftPart 
